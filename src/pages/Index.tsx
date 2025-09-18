@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import MobileFeatures from "@/components/MobileFeatures";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 
@@ -11,6 +12,7 @@ const Index = () => {
       <main>
         <Hero />
         <Features />
+        <MobileFeatures />
         <CTA />
       </main>
       <Footer />

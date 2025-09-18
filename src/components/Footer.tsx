@@ -45,14 +45,35 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Team Contact */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Rachitha S - Project Manager</li>
-              <li>rachitha.s@croptrade.com</li>
-              <li>Arun Kumar - Backend Engineer</li>
-              <li>arun.k@croptrade.com</li>
+            <h4 className="font-semibold text-foreground mb-4">Team Contact</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li>
+                <div className="font-medium text-foreground">Rachitha S</div>
+                <div>Project Manager</div>
+                <div>rachitha.s@croptrade.com</div>
+              </li>
+              <li>
+                <div className="font-medium text-foreground">Arun Kumar</div>
+                <div>Backend Engineer</div>
+                <div>arun.k@croptrade.com</div>
+              </li>
+              <li>
+                <div className="font-medium text-foreground">Meena R</div>
+                <div>Frontend Developer</div>
+                <div>meena.r@croptrade.com</div>
+              </li>
+              <li>
+                <div className="font-medium text-foreground">Prakash V</div>
+                <div>AI/ML Engineer</div>
+                <div>prakash.v@croptrade.com</div>
+              </li>
+              <li>
+                <div className="font-medium text-foreground">Kavya M</div>
+                <div>Testing & Deployment</div>
+                <div>kavya.m@croptrade.com</div>
+              </li>
             </ul>
           </div>
         </div>
