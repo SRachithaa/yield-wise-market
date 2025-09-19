@@ -8,43 +8,60 @@ const MobileFeatures = () => {
   const { toast } = useToast();
 
   const handleTakePhoto = async () => {
-    const photo = await takeCropPhoto();
-    if (photo) {
-      toast({
-        title: "Photo Captured!",
-        description: "Crop photo saved for soil analysis",
-      });
-    } else {
-      toast({
-        title: "Camera Access",
-        description: "Camera is available on mobile devices",
-        variant: "destructive",
-      });
+    console.log("Take Photo button clicked");
+    try {
+      const photo = await takeCropPhoto();
+      console.log("Photo result:", photo);
+      if (photo) {
+        toast({
+          title: "Photo Captured!",
+          description: "Crop photo saved for soil analysis",
+        });
+      } else {
+        toast({
+          title: "Camera Access",
+          description: "Camera is available on mobile devices",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error in handleTakePhoto:", error);
     }
   };
 
   const handleGetLocation = async () => {
-    const location = await getCurrentLocation();
-    if (location) {
-      toast({
-        title: "Location Found!",
-        description: `Lat: ${location.latitude.toFixed(4)}, Lng: ${location.longitude.toFixed(4)}`,
-      });
-    } else {
-      toast({
-        title: "GPS Access",
-        description: "Location services available on mobile devices",
-        variant: "destructive",
-      });
+    console.log("Get Location button clicked");
+    try {
+      const location = await getCurrentLocation();
+      console.log("Location result:", location);
+      if (location) {
+        toast({
+          title: "Location Found!",
+          description: `Lat: ${location.latitude.toFixed(4)}, Lng: ${location.longitude.toFixed(4)}`,
+        });
+      } else {
+        toast({
+          title: "GPS Access",
+          description: "Location services available on mobile devices",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error in handleGetLocation:", error);
     }
   };
 
   const handleNotifications = async () => {
-    await initializePushNotifications();
-    toast({
-      title: "Notifications Enabled!",
-      description: "You'll receive price alerts and weather updates",
-    });
+    console.log("Enable Notifications button clicked");
+    try {
+      await initializePushNotifications();
+      toast({
+        title: "Notifications Enabled!",
+        description: "You'll receive price alerts and weather updates",
+      });
+    } catch (error) {
+      console.error("Error in handleNotifications:", error);
+    }
   };
 
   return (
