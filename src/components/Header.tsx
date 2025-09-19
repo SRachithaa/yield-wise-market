@@ -18,7 +18,7 @@ const Header = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">CropTrade</h1>
-              <p className="text-xs text-muted-foreground">AgriLink</p>
+              <p className="text-xs text-muted-foreground">Crop trade</p>
             </div>
           </div>
 
