@@ -1,11 +1,41 @@
 import { Button } from "@/components/ui/button";
-import { Sprout, Menu, X } from "lucide-react";
+import { Sprout, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { AuthDialog } from "@/components/AuthDialog";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const { user, signOut } = useAuth();
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    console.log('📱 Mobile menu toggled:', !isMenuOpen);
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSignIn = () => {
+    console.log('🔐 Sign In button clicked');
+    setAuthMode('signin');
+    setAuthDialogOpen(true);
+  };
+
+  const handleGetStarted = () => {
+    console.log('🚀 Get Started button clicked');
+    if (user) {
+      console.log('🚀 User already signed in, navigating to dashboard...');
+      // Could navigate to dashboard here
+    } else {
+      setAuthMode('signup');
+      setAuthDialogOpen(true);
+    }
+  };
+
+  const handleSignOut = async () => {
+    console.log('🔐 Sign Out button clicked');
+    await signOut();
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -40,8 +70,30 @@ const Header = () => {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline">Sign In</Button>
-            <Button variant="hero">Get Started</Button>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-muted-foreground">
+                  Welcome, {user.email}
+                </span>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSignOut}
+                  className="hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button variant="outline" onClick={handleSignIn}>
+                  Sign In
+                </Button>
+                <Button variant="hero" onClick={handleGetStarted}>
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -70,13 +122,41 @@ const Header = () => {
                 Community
               </a>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="outline" className="w-full">Sign In</Button>
-                <Button variant="hero" className="w-full">Get Started</Button>
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="text-sm text-muted-foreground px-2">
+                      Welcome, {user.email}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button variant="outline" className="w-full" onClick={handleSignIn}>
+                      Sign In
+                    </Button>
+                    <Button variant="hero" className="w-full" onClick={handleGetStarted}>
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
         )}
       </div>
+      
+      <AuthDialog 
+        open={authDialogOpen} 
+        onOpenChange={setAuthDialogOpen} 
+        mode={authMode} 
+      />
     </header>
   );
 };

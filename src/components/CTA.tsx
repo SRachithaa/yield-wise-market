@@ -1,13 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CTA = () => {
+  const { user } = useAuth();
+  
   const benefits = [
     "Connect directly with buyers",
     "AI-powered farming insights",
     "Optimized logistics network",
     "Transparent pricing"
   ];
+
+  const handleStartFreeTrial = () => {
+    console.log('🆓 Start Free Trial button clicked');
+    if (user) {
+      console.log('🆓 User is logged in, starting trial...');
+      // Could navigate to trial setup
+    } else {
+      console.log('🆓 User not logged in, scroll to sign up...');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleScheduleDemo = () => {
+    console.log('📅 Schedule Demo button clicked');
+    // Could open calendar booking or contact form
+  };
 
   return (
     <section className="py-16 lg:py-24 bg-gradient-to-r from-primary via-success to-accent relative overflow-hidden">
@@ -40,15 +59,17 @@ const CTA = () => {
             <Button 
               variant="secondary" 
               size="lg" 
-              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold group"
+              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold group hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+              onClick={handleStartFreeTrial}
             >
-              Start Free Trial
+              {user ? 'Start Trial' : 'Start Free Trial'}
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 
               variant="outline" 
               size="lg"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground"
+              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground transition-all"
+              onClick={handleScheduleDemo}
             >
               Schedule Demo
             </Button>

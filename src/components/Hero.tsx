@@ -1,8 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Users, Truck } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import heroImage from "@/assets/hero-agriculture.jpg";
 
 const Hero = () => {
+  const { user } = useAuth();
+
+  const handleStartTrading = () => {
+    console.log('🚀 Start Trading button clicked');
+    if (user) {
+      console.log('🚀 User is logged in, navigating to marketplace...');
+      // Could navigate to marketplace here
+    } else {
+      console.log('🚀 User not logged in, scroll to sign up section...');
+      // Scroll to header or show auth dialog
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleWatchDemo = () => {
+    console.log('📹 Watch Demo button clicked');
+    // Could open demo video or navigate to demo page
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-secondary/30 via-background to-muted/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
@@ -48,11 +68,21 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="group">
-                Start Trading
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="group hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                onClick={handleStartTrading}
+              >
+                {user ? 'Go to Marketplace' : 'Start Trading'}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" size="lg">
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="hover:bg-accent hover:text-accent-foreground transition-all"
+                onClick={handleWatchDemo}
+              >
                 Watch Demo
               </Button>
             </div>
