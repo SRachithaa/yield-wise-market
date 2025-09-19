@@ -6,8 +6,9 @@ import { Capacitor } from '@capacitor/core';
 // Camera functionality for soil/crop photos
 export const takeCropPhoto = async () => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Camera only available on mobile devices');
-    return null;
+    console.log('Camera demo mode - would open camera on mobile device');
+    // Return a demo response for web testing
+    return 'demo-photo-path.jpg';
   }
 
   try {
@@ -28,8 +29,13 @@ export const takeCropPhoto = async () => {
 // GPS functionality for farm location and logistics
 export const getCurrentLocation = async () => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('GPS only available on mobile devices');
-    return null;
+    console.log('GPS demo mode - would get real location on mobile device');
+    // Return demo coordinates for web testing (Bangalore, India - farming region)
+    return {
+      latitude: 12.9716,
+      longitude: 77.5946,
+      accuracy: 10
+    };
   }
 
   try {
@@ -48,7 +54,7 @@ export const getCurrentLocation = async () => {
 // Push notifications for price alerts and updates
 export const initializePushNotifications = async () => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Push notifications only available on mobile devices');
+    console.log('Push notifications demo mode - would enable real notifications on mobile device');
     return;
   }
 
