@@ -40,21 +40,43 @@ export const AuthDialog = ({ open, onOpenChange, mode }: AuthDialogProps) => {
         : await signUp(email, password);
 
       if (error) {
+        // Better error handling for common auth issues
+        let errorMessage = error.message;
+        
+        if (error.message.includes('Invalid login credentials')) {
+          if (mode === 'signin') {
+            errorMessage = "Invalid email or password. If you just signed up, please check your email and confirm your account first.";
+          }
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = "Please check your email and click the confirmation link before signing in.";
+        } else if (error.message.includes('User already registered')) {
+          errorMessage = "An account with this email already exists. Try signing in instead.";
+        }
+        
+        console.error(`🔐 ${mode} error:`, error.message);
         toast({
-          title: "Error",
-          description: error.message,
+          title: "Authentication Error",
+          description: errorMessage,
           variant: "destructive",
         });
       } else {
+        const successMessage = mode === 'signin' 
+          ? "Successfully signed in!" 
+          : "Account created! Please check your email and click the confirmation link to activate your account.";
+          
         toast({
           title: "Success",
-          description: mode === 'signin' 
-            ? "Successfully signed in!" 
-            : "Account created! Please check your email for verification.",
+          description: successMessage,
         });
         
         if (mode === 'signin') {
           onOpenChange(false);
+        } else {
+          // For signup, show additional instructions
+          toast({
+            title: "Check Your Email",
+            description: "We've sent you a confirmation link. Click it to activate your account, then you can sign in.",
+          });
         }
         
         setEmail('');
@@ -79,6 +101,16 @@ export const AuthDialog = ({ open, onOpenChange, mode }: AuthDialogProps) => {
           <DialogTitle>
             {mode === 'signin' ? 'Sign In to CropTrade' : 'Create Your CropTrade Account'}
           </DialogTitle>
+          {mode === 'signin' && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Don't have an account yet? Click "Get Started" to create one.
+            </p>
+          )}
+          {mode === 'signup' && (
+            <p className="text-sm text-muted-foreground mt-2">
+              After signing up, check your email for a confirmation link.
+            </p>
+          )}
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -112,6 +144,14 @@ export const AuthDialog = ({ open, onOpenChange, mode }: AuthDialogProps) => {
           >
             {loading ? 'Please wait...' : (mode === 'signin' ? 'Sign In' : 'Create Account')}
           </Button>
+          
+          {mode === 'signin' && (
+            <div className="text-center mt-4">
+              <p className="text-sm text-muted-foreground">
+                Having trouble signing in? Make sure you've confirmed your email address.
+              </p>
+            </div>
+          )}
         </form>
       </DialogContent>
     </Dialog>
