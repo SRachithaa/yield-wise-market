@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sprout, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
+import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthDialog } from "@/components/AuthDialog";
 
@@ -9,6 +10,18 @@ const Header = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const { user, signOut } = useAuth();
+
+  // Listen for custom events from other components
+  React.useEffect(() => {
+    const handleOpenAuthDialog = (event: CustomEvent) => {
+      console.log('📡 Received openAuthDialog event:', event.detail);
+      setAuthMode(event.detail.mode);
+      setAuthDialogOpen(true);
+    };
+
+    window.addEventListener('openAuthDialog', handleOpenAuthDialog as EventListener);
+    return () => window.removeEventListener('openAuthDialog', handleOpenAuthDialog as EventListener);
+  }, []);
 
   const toggleMenu = () => {
     console.log('📱 Mobile menu toggled:', !isMenuOpen);

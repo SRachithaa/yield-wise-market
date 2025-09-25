@@ -18,8 +18,8 @@ const CTA = () => {
       console.log('🆓 User is logged in, starting trial...');
       // Could navigate to trial setup
     } else {
-      console.log('🆓 User not logged in, scroll to sign up...');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      console.log('🆓 User not logged in, showing sign up dialog...');
+      window.dispatchEvent(new CustomEvent('openAuthDialog', { detail: { mode: 'signup' } }));
     }
   };
 

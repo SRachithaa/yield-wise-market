@@ -12,9 +12,9 @@ const Hero = () => {
       console.log('🚀 User is logged in, navigating to marketplace...');
       // Could navigate to marketplace here
     } else {
-      console.log('🚀 User not logged in, scroll to sign up section...');
-      // Scroll to header or show auth dialog
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      console.log('🚀 User not logged in, showing sign up dialog...');
+      // Trigger the header auth dialog by scrolling up and letting header handle it
+      window.dispatchEvent(new CustomEvent('openAuthDialog', { detail: { mode: 'signup' } }));
     }
   };
 
