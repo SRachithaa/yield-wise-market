@@ -29,7 +29,7 @@ const Header = () => {
   };
 
   const handleSignIn = () => {
-    console.log('🔐 Sign In button clicked');
+    console.log('🔐 Sign In  clicked');
     setAuthMode('signin');
     setAuthDialogOpen(true);
   };
