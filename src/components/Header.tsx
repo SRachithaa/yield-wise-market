@@ -60,8 +60,8 @@ const Header = () => {
               <Sprout className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">CropTrade</h1>
-              <p className="text-xs text-muted-foreground">Crop trade</p>
+              <h1 className="text-xl font-bold text-foreground">Crop</h1>
+              <p className="text-xs text-muted-foreground">Crop </p>
             </div>
           </div>
 
