@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      crops: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          location: string | null
+          name: string
+          price_per_unit: number
+          quantity: number
+          status: string | null
+          unit: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          price_per_unit: number
+          quantity: number
+          status?: string | null
+          unit: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          price_per_unit?: number
+          quantity?: number
+          status?: string | null
+          unit?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          location: string | null
+          phone: string | null
+          updated_at: string | null
+          user_type: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          location?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          user_type?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          user_type?: string | null
+        }
+        Relationships: []
+      }
+      trades: {
+        Row: {
+          buyer_id: string
+          completed_at: string | null
+          created_at: string | null
+          crop_id: string | null
+          id: string
+          quantity: number
+          seller_id: string
+          status: string | null
+          total_amount: number
+        }
+        Insert: {
+          buyer_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          crop_id?: string | null
+          id?: string
+          quantity: number
+          seller_id: string
+          status?: string | null
+          total_amount: number
+        }
+        Update: {
+          buyer_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          crop_id?: string | null
+          id?: string
+          quantity?: number
+          seller_id?: string
+          status?: string | null
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trades_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
