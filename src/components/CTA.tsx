@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const CTA = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   const benefits = [
     "Connect directly with buyers",
@@ -15,8 +17,8 @@ const CTA = () => {
   const handleStartFreeTrial = () => {
     console.log('🆓 Start Free Trial button clicked');
     if (user) {
-      console.log('🆓 User is logged in, starting trial...');
-      // Could navigate to trial setup
+      console.log('🆓 User is logged in, navigating to dashboard...');
+      navigate('/dashboard');
     } else {
       console.log('🆓 User not logged in, showing sign up dialog...');
       window.dispatchEvent(new CustomEvent('openAuthDialog', { detail: { mode: 'signup' } }));
@@ -62,7 +64,7 @@ const CTA = () => {
               className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold group hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
               onClick={handleStartFreeTrial}
             >
-              {user ? 'Start Trial' : 'Start Free Trial'}
+              {user ? 'Go to Dashboard' : 'Start Free Trial'}
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 

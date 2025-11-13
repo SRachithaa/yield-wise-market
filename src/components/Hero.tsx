@@ -1,22 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Users, Truck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { VideoModal } from "@/components/VideoModal";
 import { useState } from "react";
 import heroImage from "@/assets/hero-agriculture.jpg";
 
 const Hero = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const handleStartTrading = () => {
     console.log('🚀 Start Trading button clicked');
     if (user) {
-      console.log('🚀 User is logged in, navigating to marketplace...');
-      // Could navigate to marketplace here
+      console.log('🚀 User is logged in, navigating to dashboard...');
+      navigate('/dashboard');
     } else {
       console.log('🚀 User not logged in, showing sign up dialog...');
-      // Trigger the header auth dialog by scrolling up and letting header handle it
       window.dispatchEvent(new CustomEvent('openAuthDialog', { detail: { mode: 'signup' } }));
     }
   };
@@ -77,7 +78,7 @@ const Hero = () => {
                 className="group hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
                 onClick={handleStartTrading}
               >
-                {user ? 'Go to Marketplace' : 'Start Trading'}
+                {user ? 'Go to Dashboard' : 'Start Trading'}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button 
