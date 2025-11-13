@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Users, Truck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { VideoModal } from "@/components/VideoModal";
+import { useState } from "react";
 import heroImage from "@/assets/hero-agriculture.jpg";
 
 const Hero = () => {
   const { user } = useAuth();
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   const handleStartTrading = () => {
     console.log('🚀 Start Trading button clicked');
@@ -20,7 +23,7 @@ const Hero = () => {
 
   const handleWatchDemo = () => {
     console.log('📹 Watch Demo button clicked');
-    // Could open demo video or navigate to demo page
+    setVideoModalOpen(true);
   };
 
   return (
@@ -102,6 +105,8 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      
+      <VideoModal open={videoModalOpen} onOpenChange={setVideoModalOpen} />
     </section>
   );
 };
