@@ -17,11 +17,20 @@ export const VideoModal = ({ open, onOpenChange }: VideoModalProps) => {
         </DialogHeader>
         
         <div className="relative w-full aspect-video bg-black">
-          {/* YouTube embed - Replace with actual demo video URL */}
+          {/* 
+            To use your own demo video:
+            1. Upload your video to YouTube and get the embed URL
+            2. Replace the src URL below with: https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&rel=0
+            
+            Or use a direct video file:
+            <video className="w-full h-full" controls autoPlay>
+              <source src="/path-to-your-video.mp4" type="video/mp4" />
+            </video>
+          */}
           <iframe
             className="absolute inset-0 w-full h-full"
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
-            title="CropTrade Platform Demo"
+            src="https://www.youtube.com/embed/fqVVOqnUhAA?start=0&rel=0"
+            title="CropTrade Platform Demo - Smart Agriculture Technology"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
