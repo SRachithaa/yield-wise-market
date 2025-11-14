@@ -12,16 +12,11 @@ import Header from '@/components/Header';
 import { ProfileEditDialog } from '@/components/ProfileEditDialog';
 import { TrendingUp, Package, DollarSign, MapPin, User, Phone, Edit } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import type { Database } from '@/integrations/supabase/types';
 
-interface Profile {
-  id: string;
-  full_name: string | null;
-  phone: string | null;
-  location: string | null;
-  user_type: string | null;
-  avatar_url: string | null;
-  payment_method: string | null;
-}
+type Profile = Database['public']['Tables']['profiles']['Row'] & {
+  payment_method?: string | null;
+};
 
 interface Crop {
   id: string;
@@ -78,7 +73,7 @@ const Dashboard = () => {
         .maybeSingle();
 
       if (profileError) throw profileError;
-      setProfile(profileData);
+      setProfile(profileData as Profile | null);
 
       // Fetch user's crops
       const { data: cropsData, error: cropsError } = await supabase

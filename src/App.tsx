@@ -7,6 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import BulkMarketplace from "./pages/BulkMarketplace";
+import SmartLogistics from "./pages/SmartLogistics";
+import DigitalPayments from "./pages/DigitalPayments";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +23,9 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/bulk-marketplace" element={<BulkMarketplace />} />
+            <Route path="/smart-logistics" element={<SmartLogistics />} />
+            <Route path="/digital-payments" element={<DigitalPayments />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
