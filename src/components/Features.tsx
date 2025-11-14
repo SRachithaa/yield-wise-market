@@ -9,8 +9,13 @@ import {
   Smartphone,
   DollarSign 
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Features = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
   const features = [
     {
       id: "bulk-marketplace",
@@ -87,14 +92,16 @@ const Features = () => {
   ];
 
   const handleFeatureClick = (feature: typeof features[0]) => {
-    console.log(`🎯 Feature card clicked: ${feature.title} (${feature.id})`);
-    console.log(`🔗 Would navigate to: ${feature.route}`);
-    
-    // For now, show an alert since pages don't exist yet
-    alert(`Navigating to ${feature.title}\nRoute: ${feature.route}\n\nThis will be implemented with actual pages.`);
-    
-    // Future navigation code:
-    // navigate(feature.route);
+    // Navigate to implemented pages
+    if (feature.route === "/bulk-marketplace" || feature.route === "/smart-logistics" || feature.route === "/digital-payments") {
+      navigate(feature.route);
+    } else {
+      // For unimplemented features, show toast
+      toast({
+        title: "Coming Soon",
+        description: `${feature.title} feature is under development.`,
+      });
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent, feature: typeof features[0]) => {

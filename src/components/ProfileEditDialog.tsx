@@ -11,15 +11,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
 
-interface Profile {
-  id: string;
-  full_name: string | null;
-  phone: string | null;
-  location: string | null;
-  user_type: string | null;
-  avatar_url: string | null;
-  payment_method: string | null;
-}
+import type { Database } from '@/integrations/supabase/types';
+
+type Profile = Database['public']['Tables']['profiles']['Row'] & {
+  payment_method?: string | null;
+};
 
 interface ProfileEditDialogProps {
   open: boolean;
