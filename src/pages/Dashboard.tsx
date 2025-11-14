@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import Header from '@/components/Header';
+import { ProfileEditDialog } from '@/components/ProfileEditDialog';
 import { TrendingUp, Package, DollarSign, MapPin, User, Phone, Edit } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
@@ -19,6 +20,7 @@ interface Profile {
   location: string | null;
   user_type: string | null;
   avatar_url: string | null;
+  payment_method: string | null;
 }
 
 interface Crop {
@@ -49,6 +51,7 @@ const Dashboard = () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -156,7 +159,11 @@ const Dashboard = () => {
                       <Badge className="mt-2 capitalize">{profile.user_type}</Badge>
                     )}
                   </div>
-                  <Button variant="outline" className="md:self-start">
+                  <Button 
+                    variant="outline" 
+                    className="md:self-start"
+                    onClick={() => setEditDialogOpen(true)}
+                  >
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Profile
                   </Button>
@@ -258,7 +265,14 @@ const Dashboard = () => {
                   <div className="text-center py-12">
                     <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground mb-4">No crops listed yet</p>
-                    <Button>List Your First Crop</Button>
+                    <Button onClick={() => {
+                      toast({
+                        title: 'Coming Soon',
+                        description: 'Crop listing feature will be available soon!',
+                      });
+                    }}>
+                      List Your First Crop
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -332,6 +346,14 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Profile Edit Dialog */}
+      <ProfileEditDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        profile={profile}
+        onProfileUpdated={fetchDashboardData}
+      />
     </div>
   );
 };
