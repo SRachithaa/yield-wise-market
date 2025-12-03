@@ -2,11 +2,41 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { DollarSign, CreditCard, Smartphone, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 const DigitalPayments = () => {
+  const { toast } = useToast();
+
+  const handleMakePayment = () => {
+    toast({
+      title: "Make Payment",
+      description: "Opening UPI payment interface...",
+    });
+  };
+
+  const handleRequestPayment = () => {
+    toast({
+      title: "Request Payment",
+      description: "Creating payment request link...",
+    });
+  };
+
+  const handleApplyLoan = () => {
+    toast({
+      title: "Loan Application",
+      description: "Starting microloan application process...",
+    });
+  };
+
+  const handleViewTransactions = () => {
+    toast({
+      title: "Transaction History",
+      description: "Loading complete transaction history...",
+    });
+  };
+
   const paymentDetails = {
     upiId: "sahanan8668@naviaxis",
     merchantName: "AgriConnect Platform",
@@ -57,10 +87,10 @@ const DigitalPayments = () => {
                   {paymentDetails.merchantName}
                 </p>
               </div>
-              <Button className="w-full" variant="default">
+              <Button className="w-full" variant="default" onClick={handleMakePayment}>
                 Make Payment
               </Button>
-              <Button className="w-full" variant="outline">
+              <Button className="w-full" variant="outline" onClick={handleRequestPayment}>
                 Request Payment
               </Button>
             </CardContent>
@@ -83,7 +113,7 @@ const DigitalPayments = () => {
                   <div className="text-sm text-muted-foreground">Interest Rate</div>
                 </div>
               </div>
-              <Button className="w-full" variant="hero">
+              <Button className="w-full" variant="hero" onClick={handleApplyLoan}>
                 Apply for Loan
               </Button>
             </CardContent>
@@ -113,7 +143,7 @@ const DigitalPayments = () => {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="w-full mt-4">
+            <Button variant="outline" className="w-full mt-4" onClick={handleViewTransactions}>
               View All Transactions
             </Button>
           </CardContent>
