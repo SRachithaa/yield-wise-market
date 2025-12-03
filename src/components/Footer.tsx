@@ -59,6 +59,21 @@ const Footer = () => {
                 <div>Developer</div>
                 <div>sahanagowda12@croptrade.com</div>
               </li>
+              <li>
+                <div className="font-medium text-foreground">Ganavi B</div>
+                <div>Developer</div>
+                <div>ganavi.b@croptrade.com</div>
+              </li>
+              <li>
+                <div className="font-medium text-foreground">Kruthika</div>
+                <div>Developer</div>
+                <div>kruthika@croptrade.com</div>
+              </li>
+              <li>
+                <div className="font-medium text-foreground">Youkthi</div>
+                <div>Developer</div>
+                <div>youkthi@croptrade.com</div>
+              </li>
             </ul>
           </div>
         </div>
