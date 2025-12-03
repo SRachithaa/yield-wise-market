@@ -4,8 +4,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Truck, MapPin, User, Car } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 const SmartLogistics = () => {
+  const { toast } = useToast();
+  
+  const handleBookDriver = () => {
+    toast({
+      title: "Booking Driver",
+      description: "Sending booking request to Rajesh Kumar...",
+    });
+  };
+
+  const handleViewRoutes = () => {
+    toast({
+      title: "All Routes",
+      description: "Loading all available delivery routes...",
+    });
+  };
+
+  const handleGPSTracking = () => {
+    toast({
+      title: "GPS Tracking",
+      description: "Enabling real-time GPS tracking for your shipment...",
+    });
+  };
+
   const driverData = {
     name: "Rajesh Kumar",
     vehicle: "Tata Ace (KA-01-AB-1234)",
@@ -57,7 +81,7 @@ const SmartLogistics = () => {
               <div className="text-sm text-muted-foreground">
                 Completed {driverData.trips} trips
               </div>
-              <Button className="w-full mt-4" variant="default">
+              <Button className="w-full mt-4" variant="default" onClick={handleBookDriver}>
                 Book Driver
               </Button>
             </CardContent>
@@ -85,7 +109,7 @@ const SmartLogistics = () => {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4">
+              <Button variant="outline" className="w-full mt-4" onClick={handleViewRoutes}>
                 View All Routes
               </Button>
             </CardContent>
@@ -98,7 +122,7 @@ const SmartLogistics = () => {
             <CardDescription>Real-time GPS tracking coming soon</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="hero" className="w-full">
+            <Button variant="hero" className="w-full" onClick={handleGPSTracking}>
               Enable GPS Tracking
             </Button>
           </CardContent>

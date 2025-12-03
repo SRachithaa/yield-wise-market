@@ -13,9 +13,38 @@ const BulkMarketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
+    if (!searchTerm.trim()) {
+      toast({
+        title: "Enter search term",
+        description: "Please enter a product name to search",
+        variant: "destructive",
+      });
+      return;
+    }
     toast({
       title: "Searching marketplace",
       description: `Looking for: ${searchTerm}`,
+    });
+  };
+
+  const handleViewProducts = () => {
+    toast({
+      title: "Browse Products",
+      description: "Loading available crops and produce catalog...",
+    });
+  };
+
+  const handleJoinGroup = () => {
+    toast({
+      title: "Group Selling",
+      description: "Finding farmer groups in your area to join...",
+    });
+  };
+
+  const handleViewTrends = () => {
+    toast({
+      title: "Price Trends",
+      description: "Loading market price trends and analytics...",
     });
   };
 
@@ -55,7 +84,7 @@ const BulkMarketplace = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">View All Products</Button>
+              <Button variant="outline" className="w-full" onClick={handleViewProducts}>View All Products</Button>
             </CardContent>
           </Card>
 
@@ -68,7 +97,7 @@ const BulkMarketplace = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">Join Group</Button>
+              <Button variant="outline" className="w-full" onClick={handleJoinGroup}>Join Group</Button>
             </CardContent>
           </Card>
 
@@ -81,7 +110,7 @@ const BulkMarketplace = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full">View Trends</Button>
+              <Button variant="outline" className="w-full" onClick={handleViewTrends}>View Trends</Button>
             </CardContent>
           </Card>
         </div>
