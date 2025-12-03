@@ -55,24 +55,9 @@ const Footer = () => {
                 <div>rachitha.s@croptrade.com</div>
               </li>
               <li>
-                <div className="font-medium text-foreground">Arun Kumar</div>
-                <div>Backend Engineer</div>
-                <div>arun.k@croptrade.com</div>
-              </li>
-              <li>
-                <div className="font-medium text-foreground">Meena R</div>
-                <div>Frontend Developer</div>
-                <div>meena.r@croptrade.com</div>
-              </li>
-              <li>
-                <div className="font-medium text-foreground">Prakash V</div>
-                <div>AI/ML Engineer</div>
-                <div>prakash.v@croptrade.com</div>
-              </li>
-              <li>
-                <div className="font-medium text-foreground">Kavya M</div>
-                <div>Testing & Deployment</div>
-                <div>kavya.m@croptrade.com</div>
+                <div className="font-medium text-foreground">Sahana N</div>
+                <div>Developer</div>
+                <div>sahanagowda12@croptrade.com</div>
               </li>
             </ul>
           </div>
