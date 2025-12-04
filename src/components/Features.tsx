@@ -10,11 +10,10 @@ import {
   DollarSign 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 
 const Features = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  
   
   const features = [
     {
@@ -92,16 +91,7 @@ const Features = () => {
   ];
 
   const handleFeatureClick = (feature: typeof features[0]) => {
-    // Navigate to implemented pages
-    if (feature.route === "/bulk-marketplace" || feature.route === "/smart-logistics" || feature.route === "/digital-payments") {
-      navigate(feature.route);
-    } else {
-      // For unimplemented features, show toast
-      toast({
-        title: "Coming Soon",
-        description: `${feature.title} feature is under development.`,
-      });
-    }
+    navigate(feature.route);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent, feature: typeof features[0]) => {
