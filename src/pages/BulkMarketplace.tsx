@@ -13,6 +13,7 @@ const BulkMarketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
+    console.log("Search button clicked");
     if (!searchTerm.trim()) {
       toast({
         title: "Enter search term",
@@ -28,6 +29,7 @@ const BulkMarketplace = () => {
   };
 
   const handleViewProducts = () => {
+    console.log("View Products button clicked");
     toast({
       title: "Browse Products",
       description: "Loading available crops and produce catalog...",
@@ -35,6 +37,7 @@ const BulkMarketplace = () => {
   };
 
   const handleJoinGroup = () => {
+    console.log("Join Group button clicked");
     toast({
       title: "Group Selling",
       description: "Finding farmer groups in your area to join...",
@@ -42,6 +45,7 @@ const BulkMarketplace = () => {
   };
 
   const handleViewTrends = () => {
+    console.log("View Trends button clicked");
     toast({
       title: "Price Trends",
       description: "Loading market price trends and analytics...",
@@ -70,7 +74,7 @@ const BulkMarketplace = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button onClick={handleSearch}>Search</Button>
+            <Button type="button" onClick={handleSearch}>Search</Button>
           </div>
         </div>
 
@@ -84,7 +88,7 @@ const BulkMarketplace = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" onClick={handleViewProducts}>View All Products</Button>
+              <Button type="button" variant="outline" className="w-full" onClick={handleViewProducts}>View All Products</Button>
             </CardContent>
           </Card>
 
@@ -97,7 +101,7 @@ const BulkMarketplace = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" onClick={handleJoinGroup}>Join Group</Button>
+              <Button type="button" variant="outline" className="w-full" onClick={handleJoinGroup}>Join Group</Button>
             </CardContent>
           </Card>
 
@@ -110,7 +114,7 @@ const BulkMarketplace = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" onClick={handleViewTrends}>View Trends</Button>
+              <Button type="button" variant="outline" className="w-full" onClick={handleViewTrends}>View Trends</Button>
             </CardContent>
           </Card>
         </div>
