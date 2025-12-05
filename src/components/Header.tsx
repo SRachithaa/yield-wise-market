@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Sprout, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthDialog } from "@/components/AuthDialog";
 
@@ -10,6 +11,7 @@ const Header = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   // Listen for custom events from other components
   React.useEffect(() => {
@@ -67,18 +69,18 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#marketplace" className="text-foreground hover:text-primary transition-colors">
+            <button onClick={() => navigate('/bulk-marketplace')} className="text-foreground hover:text-primary transition-colors">
               Marketplace
-            </a>
-            <a href="#logistics" className="text-foreground hover:text-primary transition-colors">
+            </button>
+            <button onClick={() => navigate('/smart-logistics')} className="text-foreground hover:text-primary transition-colors">
               Logistics
-            </a>
-            <a href="#insights" className="text-foreground hover:text-primary transition-colors">
+            </button>
+            <button onClick={() => navigate('/market-insights')} className="text-foreground hover:text-primary transition-colors">
               AI Insights
-            </a>
-            <a href="#community" className="text-foreground hover:text-primary transition-colors">
+            </button>
+            <button onClick={() => navigate('/community-hub')} className="text-foreground hover:text-primary transition-colors">
               Community
-            </a>
+            </button>
           </nav>
 
           {/* Desktop CTA Buttons */}
@@ -122,18 +124,18 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <nav className="flex flex-col space-y-4">
-              <a href="#marketplace" className="text-foreground hover:text-primary transition-colors py-2">
+              <button onClick={() => { navigate('/bulk-marketplace'); setIsMenuOpen(false); }} className="text-foreground hover:text-primary transition-colors py-2 text-left">
                 Marketplace
-              </a>
-              <a href="#logistics" className="text-foreground hover:text-primary transition-colors py-2">
+              </button>
+              <button onClick={() => { navigate('/smart-logistics'); setIsMenuOpen(false); }} className="text-foreground hover:text-primary transition-colors py-2 text-left">
                 Logistics
-              </a>
-              <a href="#insights" className="text-foreground hover:text-primary transition-colors py-2">
+              </button>
+              <button onClick={() => { navigate('/market-insights'); setIsMenuOpen(false); }} className="text-foreground hover:text-primary transition-colors py-2 text-left">
                 AI Insights
-              </a>
-              <a href="#community" className="text-foreground hover:text-primary transition-colors py-2">
+              </button>
+              <button onClick={() => { navigate('/community-hub'); setIsMenuOpen(false); }} className="text-foreground hover:text-primary transition-colors py-2 text-left">
                 Community
-              </a>
+              </button>
               <div className="flex flex-col space-y-2 pt-4">
                 {user ? (
                   <div className="space-y-2">

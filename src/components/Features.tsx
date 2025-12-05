@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { 
   ShoppingCart, 
   Truck, 
@@ -138,12 +139,20 @@ const Features = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors">
+                  <CardDescription className="text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors mb-4">
                     {feature.description}
                   </CardDescription>
-                  <div className="mt-4 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity font-medium">
-                    Click to explore →
-                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFeatureClick(feature);
+                    }}
+                  >
+                    Explore →
+                  </Button>
                 </CardContent>
               </Card>
             );
