@@ -57,15 +57,18 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <button 
+            onClick={() => navigate('/')} 
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-primary to-success rounded-lg">
               <Sprout className="w-6 h-6 text-primary-foreground" />
             </div>
-            <div>
+            <div className="text-left">
               <h1 className="text-xl font-bold text-foreground">Crop</h1>
-              <p className="text-xs text-muted-foreground">Crop </p>
+              <p className="text-xs text-muted-foreground">Crop</p>
             </div>
-          </div>
+          </button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
