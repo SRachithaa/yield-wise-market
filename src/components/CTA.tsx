@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const CTA = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const benefits = [
     "Connect directly with buyers",
@@ -27,7 +29,10 @@ const CTA = () => {
 
   const handleScheduleDemo = () => {
     console.log('📅 Schedule Demo button clicked');
-    // Could open calendar booking or contact form
+    toast({
+      title: "Demo Scheduled",
+      description: "Our team will contact you within 24 hours to schedule a personalized demo.",
+    });
   };
 
   return (
