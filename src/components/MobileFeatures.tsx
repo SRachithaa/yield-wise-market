@@ -161,6 +161,12 @@ const MobileFeatures = () => {
               <Button 
                 variant="outline" 
                 className="w-full"
+                onClick={() => {
+                  toast({
+                    title: "App Download",
+                    description: "Mobile app download will be available soon for Android and iOS!",
+                  });
+                }}
               >
                 Download App
               </Button>

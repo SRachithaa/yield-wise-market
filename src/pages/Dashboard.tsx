@@ -260,12 +260,7 @@ const Dashboard = () => {
                   <div className="text-center py-12">
                     <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground mb-4">No crops listed yet</p>
-                    <Button onClick={() => {
-                      toast({
-                        title: 'Coming Soon',
-                        description: 'Crop listing feature will be available soon!',
-                      });
-                    }}>
+                    <Button onClick={() => navigate('/bulk-marketplace')}>
                       List Your First Crop
                     </Button>
                   </div>
