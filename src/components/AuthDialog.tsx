@@ -21,7 +21,6 @@ export const AuthDialog = ({ open, onOpenChange, mode }: AuthDialogProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(`🔐 ${mode === 'signin' ? 'Sign in' : 'Sign up'} form submitted`);
     
     if (!email || !password) {
       toast({
@@ -53,7 +52,6 @@ export const AuthDialog = ({ open, onOpenChange, mode }: AuthDialogProps) => {
           errorMessage = "An account with this email already exists. Try signing in instead.";
         }
         
-        console.error(`🔐 ${mode} error:`, error.message);
         toast({
           title: "Authentication Error",
           description: errorMessage,
@@ -83,7 +81,6 @@ export const AuthDialog = ({ open, onOpenChange, mode }: AuthDialogProps) => {
         setPassword('');
       }
     } catch (error) {
-      console.error('🔐 Auth error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
