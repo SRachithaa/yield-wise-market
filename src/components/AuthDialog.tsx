@@ -121,11 +121,7 @@ export const AuthDialog = ({ open, onOpenChange, mode: initialMode }: AuthDialog
         let errorMessage = error.message;
         
         if (error.message.includes('Invalid login credentials')) {
-          if (initialMode === 'signin') {
-            errorMessage = "Invalid email or password. If you just signed up, please check your email and confirm your account first.";
-          }
-        } else if (error.message.includes('Email not confirmed')) {
-          errorMessage = "Please check your email and click the confirmation link before signing in.";
+          errorMessage = "Invalid email or password. Please try again.";
         } else if (error.message.includes('User already registered')) {
           errorMessage = "An account with this email already exists. Try signing in instead.";
         }
@@ -138,22 +134,14 @@ export const AuthDialog = ({ open, onOpenChange, mode: initialMode }: AuthDialog
       } else {
         const successMessage = initialMode === 'signin' 
           ? "Successfully signed in!" 
-          : "Account created! Please check your email and click the confirmation link to activate your account.";
+          : "Account created successfully!";
           
         toast({
           title: "Success",
           description: successMessage,
         });
         
-        if (initialMode === 'signin') {
-          handleClose(false);
-        } else {
-          toast({
-            title: "Check Your Email",
-            description: "We've sent you a confirmation link. Click it to activate your account, then you can sign in.",
-          });
-        }
-        
+        handleClose(false);
         setEmail('');
         setPassword('');
       }
@@ -245,7 +233,7 @@ export const AuthDialog = ({ open, onOpenChange, mode: initialMode }: AuthDialog
           <DialogDescription>
             {initialMode === 'signin' 
               ? "Don't have an account yet? Click \"Get Started\" to create one."
-              : "After signing up, check your email for a confirmation link."
+              : "Create your account to get started."
             }
           </DialogDescription>
         </DialogHeader>
@@ -302,13 +290,6 @@ export const AuthDialog = ({ open, onOpenChange, mode: initialMode }: AuthDialog
             )}
           </Button>
           
-          {initialMode === 'signin' && (
-            <div className="text-center mt-4">
-              <p className="text-sm text-muted-foreground">
-                Having trouble signing in? Make sure you've confirmed your email address.
-              </p>
-            </div>
-          )}
         </form>
       </DialogContent>
     </Dialog>
