@@ -1,17 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
+import { z } from 'zod';
 
 import type { Database } from '@/integrations/supabase/types';
+
+// Validation schema for profile data
+const profileSchema = z.object({
+  full_name: z.string().trim().max(100, 'Name must be less than 100 characters').optional().or(z.literal('')),
+  phone: z.string().trim().regex(/^[+]?[0-9]{10,15}$/, 'Invalid phone format (10-15 digits)').optional().or(z.literal('')),
+  location: z.string().trim().max(200, 'Location must be less than 200 characters').optional().or(z.literal('')),
+  user_type: z.enum(['farmer', 'buyer', 'trader']),
+  payment_method: z.string().trim().regex(/^[a-zA-Z0-9@._-]*$/, 'Invalid UPI format').max(100, 'Payment method must be less than 100 characters').optional().or(z.literal('')),
+});
 
 type Profile = Database['public']['Tables']['profiles']['Row'] & {
   payment_method?: string | null;
@@ -29,6 +38,7 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || '',
     phone: profile?.phone || '',
@@ -37,12 +47,37 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
     payment_method: profile?.payment_method || '',
   });
 
+  // Reset form when profile changes
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || '',
+        phone: profile.phone || '',
+        location: profile.location || '',
+        user_type: profile.user_type || 'farmer',
+        payment_method: profile.payment_method || '',
+      });
+      setErrors({});
+    }
+  }, [profile]);
+
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0 || !user) {
       return;
     }
 
     const file = event.target.files[0];
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'Error',
+        description: 'Image must be less than 5MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const fileExt = file.name.split('.').pop();
     const filePath = `${user.id}/${Math.random()}.${fileExt}`;
 
@@ -76,7 +111,6 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
 
       onProfileUpdated();
     } catch (error) {
-      console.error('Error uploading avatar:', error);
       toast({
         title: 'Error',
         description: 'Failed to upload avatar',
@@ -87,9 +121,35 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
     }
   };
 
+  const validateForm = (): boolean => {
+    const result = profileSchema.safeParse(formData);
+    
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as string;
+        fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    
+    setErrors({});
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    if (!validateForm()) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix the errors in the form',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     try {
       setLoading(true);
@@ -97,11 +157,11 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: formData.full_name,
-          phone: formData.phone,
-          location: formData.location,
+          full_name: formData.full_name.trim() || null,
+          phone: formData.phone.trim() || null,
+          location: formData.location.trim() || null,
           user_type: formData.user_type,
-          payment_method: formData.payment_method,
+          payment_method: formData.payment_method.trim() || null,
         })
         .eq('id', user.id);
 
@@ -115,7 +175,6 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
       onProfileUpdated();
       onOpenChange(false);
     } catch (error) {
-      console.error('Error updating profile:', error);
       toast({
         title: 'Error',
         description: 'Failed to update profile',
@@ -186,7 +245,9 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
               value={formData.full_name}
               onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
               placeholder="Enter your full name"
+              maxLength={100}
             />
+            {errors.full_name && <p className="text-sm text-destructive">{errors.full_name}</p>}
           </div>
 
           {/* Phone */}
@@ -197,8 +258,10 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder="Enter your phone number"
+              placeholder="Enter your phone number (10-15 digits)"
+              maxLength={15}
             />
+            {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
           </div>
 
           {/* Location */}
@@ -209,7 +272,9 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               placeholder="Enter your location"
+              maxLength={200}
             />
+            {errors.location && <p className="text-sm text-destructive">{errors.location}</p>}
           </div>
 
           {/* User Type */}
@@ -228,6 +293,7 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
                 <SelectItem value="trader">Trader</SelectItem>
               </SelectContent>
             </Select>
+            {errors.user_type && <p className="text-sm text-destructive">{errors.user_type}</p>}
           </div>
 
           {/* Payment Method (UPI ID) */}
@@ -237,8 +303,10 @@ export const ProfileEditDialog = ({ open, onOpenChange, profile, onProfileUpdate
               id="payment_method"
               value={formData.payment_method}
               onChange={(e) => setFormData({ ...formData, payment_method: e.target.value })}
-              placeholder="e.g., sahanan8668@naviaxis"
+              placeholder="e.g., yourname@upi"
+              maxLength={100}
             />
+            {errors.payment_method && <p className="text-sm text-destructive">{errors.payment_method}</p>}
           </div>
 
           {/* Submit Buttons */}
