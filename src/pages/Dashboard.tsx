@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserRole } from '@/hooks/useUserRole';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import Header from '@/components/Header';
 import { ProfileEditDialog } from '@/components/ProfileEditDialog';
-import { TrendingUp, Package, DollarSign, MapPin, User, Phone, Edit } from 'lucide-react';
+import { RoleSelectionDialog } from '@/components/RoleSelectionDialog';
+import { TransporterOnboardingDialog } from '@/components/TransporterOnboardingDialog';
+import { FarmerDashboard } from '@/components/dashboards/FarmerDashboard';
+import { BuyerDashboard } from '@/components/dashboards/BuyerDashboard';
+import { TransporterDashboard } from '@/components/dashboards/TransporterDashboard';
+import { MapPin, Phone, Edit, Tractor, ShoppingCart, Truck } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -18,35 +23,28 @@ type Profile = Database['public']['Tables']['profiles']['Row'] & {
   payment_method?: string | null;
 };
 
-interface Crop {
-  id: string;
-  name: string;
-  category: string;
-  quantity: number;
-  unit: string;
-  price_per_unit: number;
-  status: string;
-  created_at: string;
-}
+const roleIcons = {
+  farmer: Tractor,
+  buyer: ShoppingCart,
+  transporter: Truck,
+};
 
-interface Trade {
-  id: string;
-  quantity: number;
-  total_amount: number;
-  status: string;
-  created_at: string;
-  crop_id: string | null;
-}
+const roleColors = {
+  farmer: 'bg-success/10 text-success border-success/30',
+  buyer: 'bg-primary/10 text-primary border-primary/30',
+  transporter: 'bg-accent/10 text-accent border-accent/30',
+};
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
+  const { role, loading: roleLoading, hasTransporterDetails, setHasTransporterDetails, setUserRole } = useUserRole();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [crops, setCrops] = useState<Crop[]>([]);
-  const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const [showTransporterOnboarding, setShowTransporterOnboarding] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -55,17 +53,30 @@ const Dashboard = () => {
     }
 
     if (user) {
-      fetchDashboardData();
+      fetchProfile();
     }
   }, [user, authLoading, navigate]);
 
-  const fetchDashboardData = async () => {
+  useEffect(() => {
+    // Show role selection if user has no role
+    if (!roleLoading && user && role === null) {
+      setShowRoleSelection(true);
+    }
+  }, [role, roleLoading, user]);
+
+  useEffect(() => {
+    // Show transporter onboarding if they haven't added vehicle details
+    if (!roleLoading && role === 'transporter' && !hasTransporterDetails) {
+      setShowTransporterOnboarding(true);
+    }
+  }, [role, roleLoading, hasTransporterDetails]);
+
+  const fetchProfile = async () => {
     if (!user) return;
 
     try {
       setLoading(true);
 
-      // Fetch profile
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -74,31 +85,11 @@ const Dashboard = () => {
 
       if (profileError) throw profileError;
       setProfile(profileData as Profile | null);
-
-      // Fetch user's crops
-      const { data: cropsData, error: cropsError } = await supabase
-        .from('crops')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (cropsError) throw cropsError;
-      setCrops(cropsData || []);
-
-      // Fetch user's trades
-      const { data: tradesData, error: tradesError } = await supabase
-        .from('trades')
-        .select('*')
-        .or(`seller_id.eq.${user.id},buyer_id.eq.${user.id}`)
-        .order('created_at', { ascending: false });
-
-      if (tradesError) throw tradesError;
-      setTrades(tradesData || []);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('Error fetching profile:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load dashboard data',
+        description: 'Failed to load profile data',
         variant: 'destructive',
       });
     } finally {
@@ -106,7 +97,38 @@ const Dashboard = () => {
     }
   };
 
-  if (authLoading || loading) {
+  const handleRoleSelected = async (selectedRole: 'farmer' | 'buyer' | 'transporter') => {
+    const { error } = await setUserRole(selectedRole);
+    if (error) {
+      throw error;
+    }
+    setShowRoleSelection(false);
+    
+    // Update profile user_type as well for display purposes
+    if (user) {
+      await supabase
+        .from('profiles')
+        .update({ user_type: selectedRole })
+        .eq('id', user.id);
+      fetchProfile();
+    }
+
+    toast({
+      title: 'Welcome!',
+      description: `Your account is set up as a ${selectedRole}`,
+    });
+  };
+
+  const handleTransporterOnboardingComplete = () => {
+    setShowTransporterOnboarding(false);
+    setHasTransporterDetails(true);
+    toast({
+      title: 'Setup Complete',
+      description: 'You can now start accepting transport requests!',
+    });
+  };
+
+  if (authLoading || loading || roleLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -118,17 +140,23 @@ const Dashboard = () => {
     );
   }
 
-  const totalCrops = crops.length;
-  const activeCrops = crops.filter(c => c.status === 'available').length;
-  const totalTrades = trades.length;
-  const completedTrades = trades.filter(t => t.status === 'completed').length;
-  const totalRevenue = trades
-    .filter(t => t.status === 'completed')
-    .reduce((sum, t) => sum + Number(t.total_amount), 0);
+  const RoleIcon = role ? roleIcons[role] : null;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Role Selection Dialog */}
+      <RoleSelectionDialog
+        open={showRoleSelection}
+        onRoleSelected={handleRoleSelected}
+      />
+
+      {/* Transporter Onboarding Dialog */}
+      <TransporterOnboardingDialog
+        open={showTransporterOnboarding}
+        onComplete={handleTransporterOnboardingComplete}
+      />
       
       <div className="container mx-auto px-4 py-8">
         {/* Profile Header */}
@@ -150,8 +178,11 @@ const Dashboard = () => {
                       {profile?.full_name || 'User'}
                     </h1>
                     <p className="text-muted-foreground">{user?.email}</p>
-                    {profile?.user_type && (
-                      <Badge className="mt-2 capitalize">{profile.user_type}</Badge>
+                    {role && RoleIcon && (
+                      <Badge className={`mt-2 capitalize border ${roleColors[role]}`}>
+                        <RoleIcon className="w-3 h-3 mr-1" />
+                        {role}
+                      </Badge>
                     )}
                   </div>
                   <Button 
@@ -183,158 +214,10 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Insights Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Crops</CardTitle>
-              <Package className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalCrops}</div>
-              <p className="text-xs text-muted-foreground">
-                {activeCrops} active listings
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Trades</CardTitle>
-              <TrendingUp className="h-4 w-4 text-success" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalTrades}</div>
-              <p className="text-xs text-muted-foreground">
-                {completedTrades} completed
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-accent" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">₹{totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                From completed trades
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-              <User className="h-4 w-4 text-earth" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {totalTrades > 0 ? Math.round((completedTrades / totalTrades) * 100) : 0}%
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Trade completion rate
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tabs for Crops and Trading History */}
-        <Tabs defaultValue="crops" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="crops">My Crops</TabsTrigger>
-            <TabsTrigger value="trades">Trading History</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="crops" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Crop Listings</CardTitle>
-                <CardDescription>
-                  Manage your agricultural products and listings
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {crops.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-4">No crops listed yet</p>
-                    <Button onClick={() => navigate('/bulk-marketplace')}>
-                      List Your First Crop
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {crops.map((crop) => (
-                      <div
-                        key={crop.id}
-                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-                      >
-                        <div className="flex-1">
-                          <h4 className="font-semibold">{crop.name}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {crop.category} • {crop.quantity} {crop.unit}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold">₹{crop.price_per_unit}/{crop.unit}</p>
-                          <Badge variant={crop.status === 'available' ? 'default' : 'secondary'}>
-                            {crop.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="trades" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Transaction History</CardTitle>
-                <CardDescription>
-                  View all your buying and selling activities
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {trades.length === 0 ? (
-                  <div className="text-center py-12">
-                    <TrendingUp className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">No trades yet</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {trades.map((trade) => (
-                      <div
-                        key={trade.id}
-                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-                      >
-                        <div className="flex-1">
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(trade.created_at).toLocaleDateString()}
-                          </p>
-                          <p className="text-sm">Quantity: {trade.quantity}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold">₹{Number(trade.total_amount).toLocaleString()}</p>
-                          <Badge variant={
-                            trade.status === 'completed' ? 'default' :
-                            trade.status === 'pending' ? 'secondary' : 'destructive'
-                          }>
-                            {trade.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        {/* Role-specific Dashboard */}
+        {role === 'farmer' && <FarmerDashboard />}
+        {role === 'buyer' && <BuyerDashboard />}
+        {role === 'transporter' && <TransporterDashboard />}
       </div>
 
       {/* Profile Edit Dialog */}
@@ -342,7 +225,7 @@ const Dashboard = () => {
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         profile={profile}
-        onProfileUpdated={fetchDashboardData}
+        onProfileUpdated={fetchProfile}
       />
     </div>
   );
