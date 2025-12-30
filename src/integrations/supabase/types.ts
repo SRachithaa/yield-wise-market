@@ -139,15 +139,129 @@ export type Database = {
           },
         ]
       }
+      transport_requests: {
+        Row: {
+          created_at: string | null
+          crop_id: string | null
+          delivery_location: string
+          farmer_id: string
+          id: string
+          notes: string | null
+          pickup_location: string
+          status: string | null
+          transporter_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          crop_id?: string | null
+          delivery_location: string
+          farmer_id: string
+          id?: string
+          notes?: string | null
+          pickup_location: string
+          status?: string | null
+          transporter_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          crop_id?: string | null
+          delivery_location?: string
+          farmer_id?: string
+          id?: string
+          notes?: string | null
+          pickup_location?: string
+          status?: string | null
+          transporter_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transport_requests_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transporters: {
+        Row: {
+          capacity: string
+          created_at: string | null
+          id: string
+          is_available: boolean | null
+          service_area: string
+          updated_at: string | null
+          user_id: string
+          vehicle_number: string
+          vehicle_type: string
+        }
+        Insert: {
+          capacity: string
+          created_at?: string | null
+          id?: string
+          is_available?: boolean | null
+          service_area: string
+          updated_at?: string | null
+          user_id: string
+          vehicle_number: string
+          vehicle_type: string
+        }
+        Update: {
+          capacity?: string
+          created_at?: string | null
+          id?: string
+          is_available?: boolean | null
+          service_area?: string
+          updated_at?: string | null
+          user_id?: string
+          vehicle_number?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "farmer" | "buyer" | "transporter"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -274,6 +388,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["farmer", "buyer", "transporter"],
+    },
   },
 } as const
