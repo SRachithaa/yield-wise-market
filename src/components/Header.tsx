@@ -66,7 +66,7 @@ const Header = () => {
             </div>
             <div className="text-left">
               <h1 className="text-xl font-bold text-foreground">CropTrade</h1>
-              <p className="text-xs text-muted-foreground">CropTrade</p>
+              <p className="text-xs text-muted-foreground">Crop</p>
             </div>
           </button>
 
