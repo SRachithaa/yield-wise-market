@@ -58,11 +58,13 @@ const Dashboard = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    // Show role selection if user has no role
-    if (!roleLoading && user && role === null) {
+    // Show role selection if user has no role (fallback for users who signed up before role selection was added)
+    if (!roleLoading && !loading && user && role === null) {
       setShowRoleSelection(true);
+    } else {
+      setShowRoleSelection(false);
     }
-  }, [role, roleLoading, user]);
+  }, [role, roleLoading, loading, user]);
 
   useEffect(() => {
     // Show transporter onboarding if they haven't added vehicle details
